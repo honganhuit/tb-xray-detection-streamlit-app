@@ -21,6 +21,7 @@ from email.mime.multipart import MIMEMultipart
 import random
 import re
 import bcrypt
+import gdown
 
 
 def hash_password(password: str) -> str:
@@ -425,14 +426,37 @@ class CustomTFOpLambda(tf.keras.layers.Layer):
 # ==========================
 # LOAD MODEL
 # ==========================
-@st.cache_resource
+MODEL_PATH = "final_modelv3.h5"
+MODEL_DRIVE_ID = "1-HLa6PSW_x3DaVEyImZIMF4E3DSk7blf"
+
+
+@st.cache_resource(show_spinner=False)
 def load_best_model():
+
     if not os.path.exists(MODEL_PATH):
-        st.error("❌ Không tìm thấy model")
+        url = f"https://drive.google.com/uc?id={MODEL_DRIVE_ID}"
+        try:
+            st.info("📥 Đang tải model từ Google Drive…")
+            gdown.download(
+                url,
+                MODEL_PATH,
+                quiet=False,
+                fuzzy=True,  # ⭐ Bật để hỗ trợ tải file lớn
+            )
+            st.success("✅ Tải model thành công")
+        except Exception as e:
+            st.error(f"❌ Không tải được model: {e}")
+            return None
+
+    # Load model
+    try:
+        with tf.keras.utils.custom_object_scope({"CustomTFOpLambda": CustomTFOpLambda}):
+            model = load_model(MODEL_PATH, compile=False)
+
+        return model
+    except Exception as e:
+        st.error(f"❌ Lỗi khi load model: {e}")
         return None
-    with tf.keras.utils.custom_object_scope({"CustomTFOpLambda": CustomTFOpLambda}):
-        model = load_model(MODEL_PATH, compile=False)
-    return model
 
 
 model = load_best_model()
