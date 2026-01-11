@@ -1,7 +1,7 @@
 streamlit
 python-dotenv
 numpy
-tensorflow
+tensorflow==2.10.1
 pillow
 pandas
 matplotlib
