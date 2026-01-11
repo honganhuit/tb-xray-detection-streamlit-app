@@ -80,7 +80,8 @@ def init_user_db():
             Password TEXT,
             Email TEXT UNIQUE,
             ResetCode TEXT,
-            CreatedAt TEXT
+            CreatedAt TEXT,
+            is_logged_in INTEGER DEFAULT 0  -- 0 = offline, 1 = online
         )
     """
     )
@@ -175,20 +176,29 @@ def login_user(username, password):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute(
-        """
-        SELECT Password FROM users WHERE Username = ?
-    """,
-        (username,),
+        "SELECT Password, is_logged_in FROM users WHERE Username = ?", (username,)
     )
-
     row = cursor.fetchone()
-    conn.close()
 
     if row is None:
-        return False
+        conn.close()
+        return False, "Tên đăng nhập không tồn tại"
 
-    hashed_pw = row[0]
-    return check_password(password, hashed_pw)
+    hashed_pw, logged_in = row
+
+    if logged_in:
+        conn.close()
+        return False, "Tài khoản đang được đăng nhập ở nơi khác"
+
+    if check_password(password, hashed_pw):
+        cursor.execute(
+            "UPDATE users SET is_logged_in = 1 WHERE Username = ?", (username,)
+        )
+        conn.commit()
+        conn.close()
+        return True, ""
+    conn.close()
+    return False, "Sai mật khẩu"
 
 
 def show_register_page():
@@ -266,13 +276,14 @@ def show_login_page():
     password = st.text_input("🔑 Mật khẩu", type="password")
 
     if st.button("🔓 Đăng nhập", use_container_width=True):
-        if login_user(username, password):
+        success, msg = login_user(username, password)
+        if success:
             st.session_state.logged_in = True
             st.session_state.username = username
             st.success("✅ Đăng nhập thành công")
             st.rerun()
         else:
-            st.error("❌ Sai tài khoản hoặc mật khẩu")
+            st.error(f"❌ {msg}")
 
 
 def send_reset_email(to_email, username, code):
@@ -441,7 +452,7 @@ def load_best_model():
                 url,
                 MODEL_PATH,
                 quiet=False,
-                fuzzy=True,  # ⭐ Bật để hỗ trợ tải file lớn
+                fuzzy=True,
             )
             st.success("✅ Tải model thành công")
         except Exception as e:
@@ -1009,6 +1020,17 @@ def main():
             show_model_info_page()
 
     if st.sidebar.button("🚪 Đăng xuất"):
+        # Cập nhật DB
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute(
+            "UPDATE users SET is_logged_in = 0 WHERE Username = ?",
+            (st.session_state.username,),
+        )
+        conn.commit()
+        conn.close()
+
+        # Xóa session
         st.session_state.logged_in = False
         st.session_state.username = ""
         st.rerun()
