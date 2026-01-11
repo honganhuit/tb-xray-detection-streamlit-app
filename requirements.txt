@@ -1,0 +1,9 @@
+streamlit
+python-dotenv
+numpy
+tensorflow
+pillow
+pandas
+matplotlib
+seaborn
+bcrypt
