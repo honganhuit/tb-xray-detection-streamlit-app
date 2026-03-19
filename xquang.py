@@ -955,30 +955,36 @@ def main():
     # =============================
     if not st.session_state.logged_in:
 
+        # Chỉ menu 3 page chính
         pages = [
             "🔐 Đăng nhập",
             "📝 Đăng ký",
             "🔁 Quên mật khẩu",
-            "🔐 Đặt lại mật khẩu",
         ]
 
-        page = st.sidebar.radio(
-            "Tài khoản", pages, index=pages.index(st.session_state.page)
-        )
+        # Lấy index an toàn
+        try:
+            default_index = pages.index(st.session_state.page)
+        except ValueError:
+            default_index = 0
 
-        st.session_state.page = page
+        # Chọn page hiện tại từ sidebar
+        selected_page = st.sidebar.radio("Tài khoản", pages, index=default_index)
 
-        if page == "🔐 Đăng nhập":
-            show_login_page()
-
-        elif page == "📝 Đăng ký":
-            show_register_page()
-
-        elif page == "🔁 Quên mật khẩu":
-            show_forgot_password_page()
-
-        elif page == "🔐 Đặt lại mật khẩu":
+        # Nếu người dùng vừa gửi email xong, hiển thị page đổi mật khẩu
+        if st.session_state.page == "🔐 Đặt lại mật khẩu":
             show_reset_password_page()
+
+        else:
+            # Đồng bộ page được chọn từ sidebar
+            st.session_state.page = selected_page
+
+            if selected_page == "🔐 Đăng nhập":
+                show_login_page()
+            elif selected_page == "📝 Đăng ký":
+                show_register_page()
+            elif selected_page == "🔁 Quên mật khẩu":
+                show_forgot_password_page()
 
     # =============================
     # ĐÃ ĐĂNG NHẬP
@@ -998,19 +1004,17 @@ def main():
 
         if page == "🏠 Giới thiệu":
             show_intro_page()
-
         elif page == "🫁 Phân loại lao":
             show_prediction_page()
-
         elif page == "📊 Thống kê & Biểu đồ":
             show_history_page()
-
         elif page == "🧠 Thông tin mô hình":
             show_model_info_page()
 
     if st.sidebar.button("🚪 Đăng xuất"):
         st.session_state.logged_in = False
         st.session_state.username = ""
+        st.session_state.page = "🔐 Đăng nhập"
         st.rerun()
 
 
