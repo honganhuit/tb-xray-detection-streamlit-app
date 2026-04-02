@@ -1,21 +1,32 @@
-# User Stories – X-ray AI Patient Analytics
+# User Stories – X-ray AI Patient Analytics System
 
-## Epic: User Management
+## Epic 1: User Authentication
 
-- As a user, I want to register an account so I can access the system.
-- As a user, I want to reset my password via email so I can recover access.
+- As a user, I want to register an account so that I can securely access the system.
+- As a user, I want to log in with my credentials so that I can use the application features.
+- As a user, I want to reset my password via email verification so that I can recover my account if I forget my password.
 
-## Epic: Prediction
+---
 
-- As a user, I want to upload a chest X-ray image so I can get a tuberculosis prediction.
-- As a user, I want to see the prediction probability so I can evaluate the risk.
+## Epic 2: AI Prediction
 
-## Epic: Patient Management
+- As a user, I want to upload a chest X-ray image so that the system can analyze it.
+- As a user, I want the system to predict whether the image shows tuberculosis so that I can get quick diagnostic support.
+- As a user, I want to view the prediction probability so that I can better understand the confidence level of the result.
 
-- As a user, I want to save patient information so I can track their history.
-- As a user, I want to edit or delete patient information if needed.
+---
 
-## Epic: Reporting
+## Epic 3: Patient Data Management
 
-- As a user, I want to see statistics and charts so I can analyze results.
-- As a user, I want to export patient data and images as CSV/ZIP files.
+- As a user, I want to input patient information so that the prediction result is associated with a specific patient.
+- As a user, I want to save prediction results so that I can review them later.
+- As a user, I want to edit patient information so that I can correct or update records.
+- As a user, I want to delete patient records so that I can manage data effectively.
+
+---
+
+## Epic 4: Reporting & Visualization
+
+- As a user, I want to view statistical charts so that I can analyze prediction results.
+- As a user, I want to see the distribution of Normal vs Tuberculosis cases so that I can understand overall trends.
+- As a user, I want to export data as CSV or ZIP files so that I can use it for reporting or further analysis.
