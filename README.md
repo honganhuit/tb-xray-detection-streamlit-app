@@ -1,109 +1,143 @@
-# 🫁 TB X-ray Detection Streamlit App
+# X-ray AI Patient Analytics
 
-## 🎯 Goal
+This system classifies **tuberculosis** from chest X-ray images, assisting doctors in faster and more accurate diagnosis.
 
-Support doctors in detecting tuberculosis (TB) from chest X-ray images, improving diagnostic speed and accuracy.
-
----
-
-## 👤 User Stories & Use Cases
-
-### **User Story 1: Upload & Predict TB**
-
-- **As a** doctor
-- **I want to** upload a patient’s chest X-ray image
-- **So that** I can receive a TB risk score and make informed clinical decisions
-
-**Use Case (Simplified Flow):**
-
-1. User logs in with username/password
-2. User inputs patient information: Name, Birthday, Phone, Address
-3. User uploads X-ray image (JPG, JPEG, PNG)
-4. System validates image and required fields
-5. System runs deep learning model (MobileNetV3)
-6. System displays prediction: Normal / Tuberculosis + probability
-7. User can export prediction report (CSV or ZIP)
-
-**Exceptions / Alternate Flows:**
-
-- Invalid image format → Show error message
-- Missing required fields → Show warning and block prediction
-
-### **User Story 2: Manage Patient History**
-
-- **As a** doctor
-- **I want to** view and manage patient history
-- **So that** I can track past predictions and monitor patient outcomes
-
-**Use Case (Simplified Flow):**
-
-1. Select “Patient History” from dashboard
-2. System displays list of patients with prediction results
-3. User can view X-ray images, edit info, or delete records
-4. System allows export (CSV or ZIP)
-5. Dashboard shows statistics and charts
-
-**Exceptions / Alternate Flows:**
-
-- No patient records → Show “No data” message
-- Invalid edits → Show validation warning
-
-### **User Story 3: Password Management**
-
-- **As a** doctor
-- **I want to** reset/change my password securely
-- **So that** I can maintain account security
-
-**Use Case (Simplified Flow):**
-
-1. Click “Forgot Password”
-2. Receive verification code via registered email
-3. Enter code and new password
-4. System validates and updates password
-5. Log in with new password
-
-**Exceptions / Alternate Flows:**
-
-- Invalid email → Show error
-- Wrong verification code → Show error
-- Weak password → Show validation rules
+It uses **Deep Learning (MobileNetV3)** combined with **Streamlit** to provide a user-friendly web interface.
 
 ---
 
-## 📊 Workflow Overview
+## Table of Contents
 
-1. **User Login:** Secure login with username/password
-2. **Patient Info Input:** Name, Birthday, Phone, Address
-3. **Upload X-ray:** Image validation (JPG, PNG, JPEG)
-4. **Model Prediction:** Binary classification (Normal / TB)
-5. **Result Display:** Show label and probability
-6. **Save & Export:** Save to SQLite, download CSV or ZIP (CSV + images)
-7. **Visualization Dashboard:** Display patient history and charts
-
-**Validation Rules:**
-
-- Required fields: Name, Birthday, Phone, Address, Image
-- Image format check
-- Phone/email format check
-- Prediction threshold = 0.8
+1. [Project Overview](#project-overview)
+2. [Business Objectives](#business-objectives)
+3. [Scope](#scope)
+   - [In Scope](#in-scope)
+   - [Out of Scope](#out-of-scope)
+4. [Role – Developer / Business Analyst](#role--developer--business-analyst)
+5. [Deliverables](#deliverables)
+6. [Business Workflow](#business-workflow)
+7. [Key Business Rules](#key-business-rules)
+8. [Technical Implementation](#technical-implementation)
+9. [Repository Structure](#repository-structure)
+10. [How to Run](#how-to-run)
 
 ---
 
-## 🛠 Key Technologies
+## Project Overview
 
-- **Web app & UI:** Python, Streamlit
-- **Deep learning:** TensorFlow/Keras, MobileNetV3
-- **Data processing & visualization:** Pandas, Matplotlib, Seaborn
-- **Database:** SQLite for patient records
-- **Utilities:** gdown (download model), dotenv (environment variables), bcrypt (password hashing)
+X-ray AI Patient Analytics enables:
+
+- Detection and classification of tuberculosis from X-ray images
+- Patient information management
+- Storage of prediction results and images
+- Visualization and statistics of diagnosis results
+- Export of reports in CSV/ZIP format
 
 ---
 
-## ⚙️ How to Run
+## Business Objectives
 
-1. Clone repository:
+- Support fast and accurate medical diagnosis
+- Store patient information and prediction history
+- Provide statistical analysis and visual charts
+- Export reports for research and management purposes
+
+---
+
+## Scope
+
+### In Scope
+
+- Predict tuberculosis from X-ray images
+- Manage patient information
+- Display statistics and visualizations
+- Export CSV and ZIP files including images
+
+### Out of Scope
+
+- Replace professional medical diagnosis
+- Direct integration with hospital systems
+- Real-time X-ray data processing
+
+---
+
+## Role – Developer / Business Analyst
+
+- Designed and implemented **Streamlit user interface**
+- Integrated **MobileNetV3 Deep Learning model** for tuberculosis prediction
+- Configured SQLite database to store patient information and prediction results
+- Implemented user management: registration, login, password reset
+- Developed features for data visualization, charts, and report export
+- Built workflow from prediction to result storage
+
+---
+
+## Deliverables
+
+- Streamlit app (`xquang.py`)
+- SQLite database (`tb_predictions.db`)
+- Trained Deep Learning model (`final_modelv3.h5`)
+- Folder `saved_images/` for patient X-ray images
+- Key features:
+  - User registration, login, password reset
+  - Upload X-ray images and predict tuberculosis
+  - Save and edit patient information
+  - Visualize statistics and charts
+  - Export CSV and ZIP reports
+
+---
+
+## Business Workflow
+
+1. Login / Register
+2. Enter patient information
+3. Upload X-ray image
+4. Predict tuberculosis
+5. Display result and probability
+6. Save patient information and image
+7. View statistics and charts
+8. Export CSV/ZIP report
+
+---
+
+## Key Business Rules
+
+- X-ray images must be in JPG, JPEG, or PNG format
+- Required patient information: Name, Birthday, Phone, Address
+- Phone number format: 9–15 digits, optional leading +
+- Prediction probability ≥ 0.8 → "Tuberculosis", < 0.8 → "Normal"
+
+---
+
+## Technical Implementation
+
+- **Front-end / UI:** Streamlit
+- **Back-end:** Python 3, SQLite
+- **Machine Learning:** TensorFlow / Keras, MobileNetV3
+- **Image Preprocessing:** Resize to 224×224, MobileNetV3 preprocessing
+- **Email:** Gmail SMTP for password reset
+- **Security:** Bcrypt password hashing
+
+---
+
+## Repository Structure
+
+/
+├── xquang.py # Main Streamlit app
+├── MOBILENETV3.ipynb # Jupyter Notebook for model training
+├── requirements.txt # Dependencies
+├── runtime.txt # Runtime for deployment
+├── README.md # Project overview
+├── BA-Documents/ # Optional business analysis documents (BRD, Use Cases, etc.)
+└── Data/ # Optional sample data or images
+
+---
+
+## How to Run
 
 ```bash
 git clone https://github.com/honganhuit/tb-xray-detection-streamlit-app.git
 cd tb-xray-detection-streamlit-app
+pip install -r requirements.txt
+streamlit run xquang.py
 ```
